@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="hello">Hello World, FooTenderActivity!</string>
+    <string name="app_name">FooTender</string>
+    <string name="deviceservice_disconnected">Error: Device Service has disconnected</string>
+</resources>

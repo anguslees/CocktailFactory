@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<drinks>
+<drink>
+<name>Midori and lemonade</name>
+<command>Pour midori</command>
+</drink>
+<drink>
+<name>Beer</name>
+<command>Buy beer</command>
+</drink>
+</drinks>
