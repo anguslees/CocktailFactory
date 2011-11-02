@@ -12,7 +12,7 @@ import android.content.Context;
 import android.util.Log;
 
 public class Bottle {
-	private final static String TAG = "Bottle";
+	private final static String TAG = "CocktailFactoryBottle";
 
 	private final int mBottleNum;
 	private final String mName;

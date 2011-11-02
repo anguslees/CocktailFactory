@@ -21,7 +21,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 public class Chooser extends ListFragment {
-	private final static String TAG = "Chooser";
+	private final static String TAG = "CocktailFactoryChooser";
 
 	private ArrayAdapter<Drink> mAdapter;
 /*

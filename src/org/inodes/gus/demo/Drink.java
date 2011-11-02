@@ -15,6 +15,7 @@ import android.util.Log;
 
 
 public class Drink {
+	private final static String TAG = "CocktailFactoryDrink";
 	private final String mName;
 	private final String mDescription;
 	private final List<Ingredient> mIngredients;
@@ -24,8 +25,6 @@ public class Drink {
 		public final Bottle bottle;
 		public final int weight;
 		private Ingredient(Bottle bottle, int weight) {
-			assert bottle != null;
-			Log.d("Bottle", "bottle=" + bottle);
 			this.bottle = bottle;
 			this.weight = weight;
 		}
@@ -60,7 +59,6 @@ public class Drink {
 	}
 	
 	private static Map<String, Drink> mDrinks = null;
-	private static String TAG = "Drink";
 	public static Drink getDrink(Context context, int resource, String name) {
 		if (mDrinks == null)
 			readDrinks(context, resource);

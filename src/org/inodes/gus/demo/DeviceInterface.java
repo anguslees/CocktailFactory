@@ -33,7 +33,7 @@ import com.android.future.usb.UsbAccessory;
 import com.android.future.usb.UsbManager;
 
 public class DeviceInterface extends Service {
-	private static final String TAG = "FooTenderSvc";
+	private static final String TAG = "CocktailFactorySvc";
 	public static final int MSG_REGISTER_CLIENT = 1;
 	public static final int MSG_UNREGISTER_CLIENT = 2;
 	public static final int MSG_DEVICE_READY = 3;
