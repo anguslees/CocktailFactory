@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ingredients>
+<ingredient id="midori" bottle_num="0">Midori</ingredient>
+<ingredient id="vodka" bottle_num="1">Vodka</ingredient>
+<ingredient id="vermouth" bottle_num="2">Vermouth</ingredient>
+</ingredients>

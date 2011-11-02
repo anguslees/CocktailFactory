@@ -4,10 +4,5 @@
 	<classpathentry kind="src" path="gen"/>
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
 	<classpathentry kind="lib" path="/home/alees/src/FooTender/libs/android-support-v4.jar" sourcepath="/home/alees/src/android/android-sdk-linux/android-compatibility/v4/src/froyo"/>
-	<classpathentry kind="lib" path="libs/usb.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="file:/home/alees/src/android/android-sdk-linux/add-ons/addon_google_apis_google_inc_10/docs/"/>
-		</attributes>
-	</classpathentry>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

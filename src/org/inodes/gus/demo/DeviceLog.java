@@ -25,12 +25,14 @@ public class DeviceLog extends Fragment {
 		@Override
 		public void handleMessage(Message msg) {
 			switch (msg.what) {
+/*
 			case DeviceInterface.MSG_DEVICE_ERROR:
 			case DeviceInterface.MSG_DEVICE_OUTPUT:
 				String text = (String) msg.obj;
 				mTextView.append(text + "\n");
 				//fixme: mTextView.scrollTo show new text
 				break;
+*/
 			default:
 				super.handleMessage(msg);
 			}

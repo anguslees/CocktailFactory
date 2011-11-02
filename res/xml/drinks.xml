@@ -1,11 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <drinks>
 <drink>
-<name>Midori and lemonade</name>
-<command>Pour midori</command>
+<name>Midori &amp; lemonade</name>
+<description>Midori, lemonade</description>
+<image res="@drawable/drink_placeholder"/>
+<ingredients>
+<ingredient id="midori" weight="30"/>
+</ingredients>
 </drink>
 <drink>
-<name>Beer</name>
-<command>Buy beer</command>
+<name>Vodka Martini</name>
+<description>Vodka, Vermouth. Stirred, not shaken.</description>
+<image res="@drawable/drink_placeholder"/>
+<ingredients>
+<ingredient id="vodka" weight="20"/>
+<ingredient id="vermouth" weight="10"/>
+</ingredients>
 </drink>
 </drinks>
