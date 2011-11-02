@@ -4,24 +4,24 @@ import java.util.List;
 
 import org.inodes.gus.demo.Chooser;
 import org.inodes.gus.demo.Drink;
-import org.inodes.gus.demo.FooTenderActivity;
+import org.inodes.gus.demo.CocktailFactoryActivity;
 import org.inodes.gus.demo.R;
 
 import android.test.ActivityInstrumentationTestCase2;
 import android.widget.ListAdapter;
 
-public class ChooserTest extends ActivityInstrumentationTestCase2<FooTenderActivity> {
-	FooTenderActivity mActivity;
+public class ChooserTest extends ActivityInstrumentationTestCase2<CocktailFactoryActivity> {
+	CocktailFactoryActivity mActivity;
 	Chooser mChooser;
 
 	public ChooserTest() {
-		super(FooTenderActivity.class);
+		super(CocktailFactoryActivity.class);
 	}
 
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
-		mActivity = (FooTenderActivity)getActivity();
+		mActivity = (CocktailFactoryActivity)getActivity();
 		assertNotNull(mActivity);
 		mChooser = (Chooser) mActivity.getSupportFragmentManager().findFragmentById(R.id.chooser);
 		assertNotNull(mChooser);
