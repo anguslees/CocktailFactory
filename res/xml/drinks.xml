@@ -1,20 +1,62 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <drinks>
 <drink>
-<name>Midori &amp; lemonade</name>
-<description>Midori, lemonade</description>
+<name>Boulevardier</name>
+<description></description>
 <image res="@drawable/drink_placeholder"/>
 <ingredients>
-<ingredient id="midori" weight="30"/>
+<ingredient id="whiskey" weight="30"/>
+<ingredient id="sweet_vermouth" weight="30" />
+<ingredient id="campari" weight="30" />
 </ingredients>
 </drink>
 <drink>
-<name>Vodka Martini</name>
-<description>Vodka, Vermouth. Stirred, not shaken.</description>
+<name>Manhattan</name>
+<description>(ish)</description>
 <image res="@drawable/drink_placeholder"/>
 <ingredients>
-<ingredient id="vodka" weight="20"/>
-<ingredient id="vermouth" weight="10"/>
+<ingredient id="whiskey" weight="60"/>
+<ingredient id="sweet_vermouth" weight="30"/>
+</ingredients>
+</drink>
+<drink>
+<name>Martinez</name>
+<description></description>
+<image res="@drawable/drink_placeholder"/>
+<ingredients>
+<ingredient id="gin" weight="50"/>
+<ingredient id="sweet_vermouth" weight="40"/>
+<ingredient id="cointreau" weight="10"/>
+</ingredients>
+</drink>
+<drink>
+<name>Negroni</name>
+<description></description>
+<image res="@drawable/drink_placeholder"/>
+<ingredients>
+<ingredient id="gin" weight="30"/>
+<ingredient id="sweet_vermouth" weight="30"/>
+<ingredient id="campari" weight="30"/>
+</ingredients>
+</drink>
+<drink>
+<name>Whiskey Sour</name>
+<description></description>
+<image res="@drawable/drink_placeholder"/>
+<ingredients>
+<ingredient id="whiskey" weight="50"/>
+<ingredient id="cointreau" weight="20"/>
+<ingredient id="lemon" weight="20"/>
+</ingredients>
+</drink>
+<drink>
+<name>White Lady</name>
+<description></description>
+<image res="@drawable/drink_placeholder"/>
+<ingredients>
+<ingredient id="gin" weight="50"/>
+<ingredient id="cointreau" weight="20"/>
+<ingredient id="lemon" weight="20"/>
 </ingredients>
 </drink>
 </drinks>
