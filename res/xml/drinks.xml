@@ -20,6 +20,25 @@
 </ingredients>
 </drink>
 <drink>
+<name>Americano</name>
+<description></description>
+<image res="@drawable/drink_placeholder"/>
+<ingredients>
+<ingredient id="sweet_vermouth" weight="30"/>
+<ingredient id="campari" weight="30"/>
+</ingredients>
+</drink>
+<!-- 
+New drinks:
+ <drink/>
+ DrinkActivity
+ Fluffy Cloud
+ +1 for the road
+ .. geo ..
+ I'm Feeling Lucky
+ beta?
+
+<drink>
 <name>Martinez</name>
 <description></description>
 <image res="@drawable/drink_placeholder"/>
@@ -59,4 +78,5 @@
 <ingredient id="lemon" weight="20"/>
 </ingredients>
 </drink>
+-->
 </drinks>

@@ -19,18 +19,18 @@ public class Bottle {
 
 	private static Map<String, Bottle> singletonMap;
 
-	public static Bottle getBottle(Context context, int resource, String id) {
+	public static Bottle getBottle(Context context, String id) {
 		if (singletonMap == null)
-			readBottles(context, resource);
+			readBottles(context);
 		Bottle ret = singletonMap.get(id);
 		if (ret == null)
 			Log.e(TAG, "Failed to find bottle id=" + id);
 		return ret;
 	}
 	
-	public static void readBottles(Context context, int resource) {
+	public static void readBottles(Context context) {
 		try {
-			XmlPullParser parser = context.getResources().getXml(resource);
+			XmlPullParser parser = context.getResources().getXml(R.xml.bottles);
 			Map<String, Bottle> map = new HashMap<String, Bottle>();
 			boolean end = false;
 			while (!end) {

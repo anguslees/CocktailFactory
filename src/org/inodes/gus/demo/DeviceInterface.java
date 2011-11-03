@@ -2,44 +2,39 @@ package org.inodes.gus.demo;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.FileDescriptor;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 
-import android.app.IntentService;
+import com.android.future.usb.UsbAccessory;
+import com.android.future.usb.UsbManager;
+
 import android.app.Service;
 import android.content.Intent;
+import android.os.Bundle;
 import android.os.Handler;
+import android.os.HandlerThread;
 import android.os.IBinder;
+import android.os.Looper;
 import android.os.Message;
 import android.os.Messenger;
 import android.os.ParcelFileDescriptor;
 import android.os.RemoteException;
 import android.util.Log;
 
-import com.android.future.usb.UsbAccessory;
-import com.android.future.usb.UsbManager;
-
 public class DeviceInterface extends Service {
 	private static final String TAG = "CocktailFactorySvc";
-	public static final int MSG_REGISTER_CLIENT = 1;
-	public static final int MSG_UNREGISTER_CLIENT = 2;
+	
+	public static final String DATA_ACCESSORYFD = "AccessoryFd";
+
 	public static final int MSG_DEVICE_READY = 3;
 	public static final int MSG_MAKE_DRINK = 4;
 	public static final int MSG_RESET = 5;
 	public static final int MSG_STATUS = 6;
+	public static final int MSG_ERROR = 7;
 	
 	private static final int REQ_WAIT = 119;     // 'w'
 	private static final int REQ_DISPENSE = 100; // 'd'
@@ -48,28 +43,69 @@ public class DeviceInterface extends Service {
 	private static final int RESP_CLIENT_ERR = 40;
 	private static final int RESP_SERVER_ERR = 50;
 
-	private OutputStream mOutputStream;
-	private InputStream mInputStream;
-	private Writer mOutputStreamWriter;
-	private ParcelFileDescriptor mFileDescriptor = null;
+	private Messenger mMessenger;
 
-	class DrinkMaker extends Thread {
-		private final Drink mDrink;
-		private List<Drink.Ingredient> mRemainingIngredients;
-		private final Messenger mReplyTo;
-		private DataOutputStream mOut;
-		private DataInputStream mIn;
-		private final int mStartId;
-		
-		public DrinkMaker(Drink drink, Messenger replyTo, int startId) {
-			mDrink = drink;
-			mRemainingIngredients = new ArrayList<Drink.Ingredient>(drink.getIngredients());
-			mReplyTo = replyTo;
-			mStartId = startId;
-			mOut = new DataOutputStream(new BufferedOutputStream(mOutputStream, 4));
-			mIn = new DataInputStream(new BufferedInputStream(mInputStream, 16384));
+	@Override
+	public void onCreate() {
+		mDrinkMakerThread.start();
+		mMessenger = new Messenger(new DrinkMakerHandler(mDrinkMakerThread.getLooper()));
+	}
+
+	@Override
+	public void onDestroy() {
+		mDrinkMakerThread.quit();
+	}
+
+	final HandlerThread mDrinkMakerThread = new HandlerThread("DrinkMaker");
+	class DrinkMakerHandler extends Handler {
+		public DrinkMakerHandler(Looper looper) {
+			super(looper);
 		}
 
+		@Override
+		public void handleMessage(Message msg) {
+			Log.d(TAG, "handleMessage " + msg);
+			switch (msg.what) {
+			case MSG_MAKE_DRINK:
+				Bundle data = msg.getData();
+				Log.d(TAG, "Got data=" + data);
+				String drinkName = (String)msg.obj;
+				ParcelFileDescriptor pfd = (ParcelFileDescriptor)data.getParcelable(DATA_ACCESSORYFD); 
+				Log.d(TAG, "Got pfd=" + pfd);
+
+				MixDrinksTask t = new MixDrinksTask(
+						Drink.getDrink(DeviceInterface.this, drinkName),
+						msg.replyTo,
+						pfd.getFileDescriptor());
+				t.run();
+				
+				try {
+					pfd.close();
+				} catch (IOException e) {
+				}
+
+				break;
+			default:
+				super.handleMessage(msg);
+				break;
+			}
+		}
+	}
+
+	// This class only exists to avoid passing around various related options
+	class MixDrinksTask implements Runnable {
+		final private Drink mDrink;
+		final private Messenger mReplyTo;
+		final private DataOutputStream mOut;
+		final private DataInputStream mIn;
+		
+		public MixDrinksTask(Drink drink, Messenger replyTo, FileDescriptor fd) {
+			mDrink = drink;
+			mReplyTo = replyTo;
+			mOut = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(fd), 4));
+			mIn = new DataInputStream(new BufferedInputStream(new FileInputStream(fd), 16384));
+		}
+		
 		private void writeCommand(int command, int target, int value) throws IOException {
 			Log.d(TAG, "Writing command {" + command + ", " + target + ", " + value + "}");
 			mOut.writeByte(command);
@@ -83,13 +119,11 @@ public class DeviceInterface extends Service {
 			int status;
 			int progress;
 			do {
-				Log.d(TAG, "About to read from device");
 				status = mIn.readUnsignedByte();
-				Log.d(TAG, "Read byte: " + status);
 				progress = mIn.readUnsignedByte() | (mIn.readUnsignedByte() << 8);
 				Log.d(TAG, "Read response {" + status + ", " + progress + "}");
 				if (mReplyTo != null && status != RESP_OK) {
-					Message msg = Message.obtain(null, status, progress);
+					Message msg = Message.obtain(null, MSG_STATUS, status, progress);
 					try {
 						mReplyTo.send(msg);
 					} catch (RemoteException e) {
@@ -99,76 +133,40 @@ public class DeviceInterface extends Service {
 			} while (status == RESP_CONTINUE);
 		}
 
+		private void doCommand(int command, int target, int value) throws IOException {
+			writeCommand(command, target, value);
+			waitForDevice();
+		}
+
 		@Override
 		public void run() {
 			try {
 				// reset/zero weight measurements
-				writeCommand(REQ_WAIT, 0, 0);
-				waitForDevice();
+				doCommand(REQ_WAIT, 0, 0);
 
 				for (Drink.Ingredient ingredient : mDrink.getIngredients()) {
-					Log.d(TAG, "ingredient=" + ingredient);
-					Log.d(TAG, "bottle=" + ingredient.bottle);
-					Log.d(TAG, "weight=" + ingredient.weight);
-					Log.d(TAG, "bottlenum=" + ingredient.bottle.bottleNum());
-					writeCommand(REQ_DISPENSE, ingredient.bottle.bottleNum(), ingredient.weight);
-					waitForDevice();
+					doCommand(REQ_DISPENSE, ingredient.bottle.bottleNum(), ingredient.weight/5);
 				}
+				
+				Message msg = Message.obtain(null, MSG_DEVICE_READY);
+				mReplyTo.send(msg);
 			} catch (IOException e) {
 				Log.e(TAG, "IO error talking to device, aborting", e);
-			}
-			stopSelfResult(mStartId);
-		}
-	}
-
-	@Override
-	public int onStartCommand(Intent intent, int flags, int startId) {
-		Log.d(TAG, "StartCommand id=" + startId + " intent=" + intent);
-		//UsbAccessory accessory = UsbManager.getAccessory(intent);
-		UsbAccessory accessory = UsbManager.getInstance(this).getAccessoryList()[0];
-		openAccessory(accessory);
-
-		Drink drink = Drink.getDrink(this, R.xml.drinks, intent.getData().getPath().substring(1));
-		assert drink != null;
-		Thread t = new DrinkMaker(drink, null, startId);
-		t.start();
-
-		return START_NOT_STICKY;
-	}
-
-	protected void openAccessory(UsbAccessory accessory) {
-		Log.d(TAG, "openAccessory: " + accessory);
-		UsbManager usbManager = UsbManager.getInstance(this);		
-		mFileDescriptor = usbManager.openAccessory(accessory);
-		if (mFileDescriptor != null) {
-			FileDescriptor fd = mFileDescriptor.getFileDescriptor();
-			mInputStream = new FileInputStream(fd);
-			mOutputStream = new FileOutputStream(fd);
-			mOutputStreamWriter = new OutputStreamWriter(mOutputStream);
-		}
-	}
-	
-	@Override
-	public void onDestroy() {
-		close();
-	}
-
-	private void close() {
-		if (mFileDescriptor != null) {
-			try {
-				mOutputStream.close();
-				mInputStream.close();
-				mFileDescriptor.close();
-				mFileDescriptor = null;
-			} catch (IOException e) {
-				Log.i(TAG, "Ignoring IOError while closing stream", e);
+				try {
+					Message msg = Message.obtain(null, MSG_ERROR, e);
+					mReplyTo.send(msg);
+				} catch (RemoteException e1) {
+					// Ignore
+				}
+			} catch (RemoteException e) {
+				Log.e(TAG, "Error sending IPC response", e);
 			}
 		}
 	}
+
 
 	@Override
 	public IBinder onBind(Intent intent) {
-		// TODO Auto-generated method stub
-		return null;
+		return mMessenger.getBinder();
 	}
 }

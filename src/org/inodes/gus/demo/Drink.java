@@ -59,23 +59,23 @@ public class Drink {
 	}
 	
 	private static Map<String, Drink> mDrinks = null;
-	public static Drink getDrink(Context context, int resource, String name) {
+	public static Drink getDrink(Context context, String name) {
 		if (mDrinks == null)
-			readDrinks(context, resource);
+			readDrinks(context);
 		Log.d(TAG, "getting drink " + name);
 		return mDrinks.get(name);
 	}
-	public static Collection<Drink> getDrinks(Context context, int resource) {
+	public static Collection<Drink> getDrinks(Context context) {
 		if (mDrinks == null)
-			readDrinks(context, resource);
+			readDrinks(context);
 		Log.d(TAG, "Returning a drinks list of size " + mDrinks.values().size());
 		return mDrinks.values();
 	}
 
-	private static void readDrinks(Context context, int resource) {
+	private static void readDrinks(Context context) {
 		Log.d(TAG, "reading drinks.xml");
 		try {
-			XmlPullParser parser = context.getResources().getXml(resource);
+			XmlPullParser parser = context.getResources().getXml(R.xml.drinks);
 			Map<String, Drink> drinks = new HashMap<String, Drink>();
 			String name = null;
 			String description = null;
@@ -101,7 +101,7 @@ public class Drink {
 								parser.getAttributeValue(null, "res"),
 								"drawable", Chooser.class.getPackage().getName());
 					else if (tag.equals("ingredient")) {
-						Bottle bottle = Bottle.getBottle(context, R.xml.bottles, parser.getAttributeValue(null, "id"));
+						Bottle bottle = Bottle.getBottle(context, parser.getAttributeValue(null, "id"));
 						int weight = Integer.parseInt(parser.getAttributeValue(null, "weight"));
 						ingredients.add(new Ingredient(bottle, weight));
 					}
