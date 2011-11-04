@@ -1,19 +1,20 @@
 package org.inodes.gus.demo;
 
 import java.util.Collection;
-import java.util.List;
 
+import android.app.ProgressDialog;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.Messenger;
 import android.os.RemoteException;
+import android.speech.tts.TextToSpeech;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.ListFragment;
 import android.util.Log;
 import android.view.View;
@@ -26,9 +27,12 @@ import android.widget.Toast;
 
 public class Chooser extends ListFragment {
 	private final static String TAG = "CocktailFactoryChooser";
+	
+	private final static boolean ENABLE_SPEECH = true;
 
 	private ArrayAdapter<Drink> mAdapter;
 	private Messenger mDeviceService = null;
+	private TextToSpeech mTts = null;
 
 	final private ServiceConnection mConnection = new ServiceConnection() {
 		@Override
@@ -48,10 +52,20 @@ public class Chooser extends ListFragment {
 	private class MessageHandler extends Handler {
 		@Override
 		public void handleMessage(Message msg) {
+			Log.d(TAG, "handleMessage: " + msg);
 			switch (msg.what) {
-			case DeviceInterface.MSG_DEVICE_READY:
-				getListView().setEnabled(true);
+			case DeviceInterface.MSG_DONE: {
+				onDrinkCompleted();
 				break;
+			}
+			case DeviceInterface.MSG_STATUS: {
+				onDrinkProgress(msg.arg1, msg.arg2);
+				break;
+			}
+			case DeviceInterface.MSG_ERROR: {
+				onDrinkError((String)msg.obj);
+				break;
+			}
 			default:
 				super.handleMessage(msg);
 				break;
@@ -88,6 +102,64 @@ public class Chooser extends ListFragment {
 		}
 	}
 
+	protected void onDrinkChosen(Drink drink) {
+		ProgressDialogFragment f = ProgressDialogFragment.newSpinnerInstance(
+				"Place your glass on the scales");
+		f.show(getFragmentManager(), "dialog");
+
+		getListView().setEnabled(false);  // reenabled once finished
+		
+		if (mTts != null) {
+			mTts.speak("An excellent choice!", TextToSpeech.QUEUE_FLUSH, null);
+			mTts.speak("Just place your glass on the scales.", TextToSpeech.QUEUE_ADD, null);
+		}
+	}
+	
+	protected void onDrinkProgress(int progress, int max) {
+		Log.d(TAG, "onDrinkProgress(" + progress + "/" + max + ")");
+		ProgressDialogFragment f = (ProgressDialogFragment)getFragmentManager().findFragmentByTag("dialog");
+		Log.d(TAG, "Found dialog fragment: " + f);
+		if (f != null) {
+			ProgressDialog d = (ProgressDialog)f.getDialog();
+			if (d.isIndeterminate()) {
+				Log.d(TAG, "dialog is indeterminate - switching to horizontal");
+				// currently showing spinner - time to switch to horizontal
+				FragmentTransaction ft = getFragmentManager().beginTransaction();
+				f.dismiss();
+				f = ProgressDialogFragment.newHorizInstance();
+				ft.add(f, "dialog");
+				ft.commit();
+			}
+			f.updateProgress(progress, max);		
+		}
+	}
+
+	protected void onDrinkCompleted() {
+		getListView().setEnabled(true);
+
+		ProgressDialogFragment f = (ProgressDialogFragment)getFragmentManager().findFragmentByTag("dialog");
+		if (f != null)
+			f.dismiss();
+
+		if (mTts != null) {
+			mTts.speak("Enjoy!", TextToSpeech.QUEUE_ADD, null);
+		}
+	}
+
+	protected void onDrinkError(String err) {
+		getListView().setEnabled(true);
+
+		ProgressDialogFragment f = (ProgressDialogFragment)getFragmentManager().findFragmentByTag("dialog");
+		if (f != null)
+			f.dismiss();
+
+		if (mTts != null) {
+			mTts.speak("Oops, sorry about that!", TextToSpeech.QUEUE_FLUSH, null);
+		}
+		
+		Toast.makeText(getActivity(), "Error: " + err, Toast.LENGTH_SHORT).show();
+	}
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -95,8 +167,25 @@ public class Chooser extends ListFragment {
 		mAdapter = new DrinkAdapter(getActivity(), Drink.getDrinks(getActivity()));
 		setListAdapter(mAdapter);
 		Log.d(TAG, "xml files parsed");
+
+		if (ENABLE_SPEECH) {
+			mTts = new TextToSpeech(getActivity(), new TextToSpeech.OnInitListener() {
+				@Override
+				public void onInit(int status) {
+					if (status == TextToSpeech.ERROR) {
+						Log.e(TAG, "Error initialising text-to-speech - disabling");
+						mTts = null;
+					}
+				}
+			});
+		}
 	}
-	
+
+	@Override
+	public void onDestroy() {
+		if (mTts != null) mTts.shutdown();
+		super.onDestroy();
+	}
 	@Override
 	public void onViewCreated(View view, Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
@@ -134,7 +223,7 @@ public class Chooser extends ListFragment {
 			msg.setData(bundle);
 			mDeviceService.send(msg);
 
-			getListView().setEnabled(false);  // reenabled once finished
+			onDrinkChosen(drink);
 		} catch (RemoteException e) {
 			Toast.makeText(getActivity(), R.string.deviceservice_disconnected,
 					Toast.LENGTH_SHORT).show();
