@@ -35,13 +35,11 @@ public class Chooser extends ListFragment {
 	private TextToSpeech mTts = null;
 
 	final private ServiceConnection mConnection = new ServiceConnection() {
-		@Override
 		public void onServiceConnected(ComponentName name, IBinder service) {
 			mDeviceService = new Messenger(service);
 			getListView().setEnabled(true);
 		}
 
-		@Override
 		public void onServiceDisconnected(ComponentName name) {
 			getListView().setEnabled(false);
 		}
@@ -170,7 +168,6 @@ public class Chooser extends ListFragment {
 
 		if (ENABLE_SPEECH) {
 			mTts = new TextToSpeech(getActivity(), new TextToSpeech.OnInitListener() {
-				@Override
 				public void onInit(int status) {
 					if (status == TextToSpeech.ERROR) {
 						Log.e(TAG, "Error initialising text-to-speech - disabling");

@@ -3,6 +3,6 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="gen"/>
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
-	<classpathentry kind="lib" path="/home/alees/src/CocktailFactory/libs/android-support-v4.jar" sourcepath="/home/alees/src/android/android-sdk-linux/android-compatibility/v4/src/froyo"/>
-	<classpathentry kind="output" path="bin"/>
+	<classpathentry kind="lib" path="/Users/nickjohnson/android-sdk-mac_x86/extras/android/support/v13/android-support-v13.jar" sourcepath="/home/alees/src/android/android-sdk-linux/android-compatibility/v4/src/froyo"/>
+	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

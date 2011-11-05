@@ -26,7 +26,7 @@ public class DeviceInterface extends Service {
 	private static final String TAG = "CocktailFactorySvc";
 	
 	// Scale down drinks for demos - set to 1 for "release"
-	private final static int WEIGHT_FACTOR = 5;
+	private final static int WEIGHT_FACTOR = 1;
 
 	public static final String DATA_ACCESSORYFD = "AccessoryFd";
 
@@ -158,7 +158,6 @@ public class DeviceInterface extends Service {
 			waitForDevice();
 		}
 
-		@Override
 		public void run() {
 			try {
 				// reset/zero weight measurements
