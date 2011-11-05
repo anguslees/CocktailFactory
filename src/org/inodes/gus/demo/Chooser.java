@@ -2,6 +2,8 @@ package org.inodes.gus.demo;
 
 import java.util.Collection;
 
+import org.inodes.gus.demo.Drink.Ingredient;
+
 import android.app.ProgressDialog;
 import android.content.ComponentName;
 import android.content.Context;
@@ -94,7 +96,13 @@ public class Chooser extends ListFragment {
 			drink_name.setText(drink.getName());
 
 			TextView desc = (TextView)v.findViewById(R.id.drink_desc);
-			desc.setText(drink.getDescription());
+			StringBuilder ingredients = new StringBuilder();
+			for(Ingredient i : drink.getIngredients()) {
+				if(ingredients.length() > 0)
+					ingredients.append(", ");
+				ingredients.append(i.bottle.toString());
+			}
+			desc.setText(ingredients.toString());
 
 			return v;
 		}
