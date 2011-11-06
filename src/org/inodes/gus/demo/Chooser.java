@@ -1,6 +1,9 @@
 package org.inodes.gus.demo;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+import java.util.Random;
 
 import android.app.ProgressDialog;
 import android.content.ComponentName;
@@ -33,7 +36,6 @@ public class Chooser extends ListFragment {
 	private ArrayAdapter<Drink> mAdapter;
 	private Messenger mDeviceService = null;
 	private TextToSpeech mTts = null;
-
 	final private ServiceConnection mConnection = new ServiceConnection() {
 		@Override
 		public void onServiceConnected(ComponentName name, IBinder service) {
@@ -102,6 +104,26 @@ public class Chooser extends ListFragment {
 		}
 	}
 
+	private class RandomDrink extends Drink {
+		final private static int NUM_INGREDIENTS = 3;
+		final private static int TOTAL_WEIGHT = 60;
+		final private Random mRandom = new Random();
+		final Bottle[] allBottles = (Bottle[])Bottle.getBottles().toArray();
+		public RandomDrink(String name, String desc, int imgResource) {
+			super(name, desc, null, imgResource);
+		}
+		@Override
+		public Collection<Ingredient> getIngredients() {
+			List<Ingredient> ingredients = new ArrayList<Ingredient>();
+			for (int i = 0; i < NUM_INGREDIENTS; i++) {
+				int bottle_num = mRandom.nextInt(allBottles.length);
+				ingredients.add(new Drink.Ingredient(allBottles[bottle_num],
+						TOTAL_WEIGHT / NUM_INGREDIENTS));
+			}
+			return ingredients;
+		}
+	}
+
 	protected void onDrinkChosen(Drink drink) {
 		ProgressDialogFragment f = ProgressDialogFragment.newSpinnerInstance(
 				"Place your glass on the scales");
@@ -165,6 +187,8 @@ public class Chooser extends ListFragment {
 		super.onCreate(savedInstanceState);
 
 		mAdapter = new DrinkAdapter(getActivity(), Drink.getDrinks(getActivity()));
+		mAdapter.add(new RandomDrink("I'm Feeling Lucky",
+				"Let the bartender mix a drink just for you", R.drawable.drink_placeholder));
 		setListAdapter(mAdapter);
 		Log.d(TAG, "xml files parsed");
 

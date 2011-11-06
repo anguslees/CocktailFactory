@@ -1,6 +1,7 @@
 package org.inodes.gus.demo;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -28,6 +29,10 @@ public class Bottle {
 		return ret;
 	}
 	
+	public static Collection<Bottle> getBottles() {
+		return singletonMap.values();
+	}
+
 	public static void readBottles(Context context) {
 		try {
 			XmlPullParser parser = context.getResources().getXml(R.xml.bottles);

@@ -24,13 +24,13 @@ public class Drink {
 	public static class Ingredient {
 		public final Bottle bottle;
 		public final int weight;
-		private Ingredient(Bottle bottle, int weight) {
+		public Ingredient(Bottle bottle, int weight) {
 			this.bottle = bottle;
 			this.weight = weight;
 		}
 	}
 
-	private Drink(String name, String description, List<Ingredient> ingredients, int imageResource) {
+	public Drink(String name, String description, List<Ingredient> ingredients, int imageResource) {
 		mName = name;
 		mDescription = description;
 		mIngredients = ingredients;
