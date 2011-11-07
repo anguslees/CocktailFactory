@@ -117,12 +117,23 @@ public class Chooser extends ListFragment {
 
 			return v;
 		}
+
+		@Override
+		public boolean areAllItemsEnabled() {
+			return false;
+        }
+
+		@Override
+        public boolean isEnabled(int position) {
+			// "selection" is handled via an explicit "go" button in the item view
+			return false;
+        }
 	}
 
 	private class RandomDrink extends Drink {
 		final private static int NUM_INGREDIENTS = 3;
 		final private static int TOTAL_WEIGHT = 60;
-		final Bottle[] allBottles = (Bottle[])Bottle.getBottles().toArray();
+		final Bottle[] allBottles = Bottle.getBottles().toArray(new Bottle[0]);
 		public RandomDrink(String name, String desc, int imgResource) {
 			super(name, desc, null, imgResource);
 		}
@@ -232,7 +243,6 @@ public class Chooser extends ListFragment {
 
 		ListView lv = getListView();
 		lv.setTextFilterEnabled(true);
-		lv.setEnabled(false);  // "selection" is done via an explicit button in each listitem
 	}
 
 	@Override
