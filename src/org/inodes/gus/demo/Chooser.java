@@ -5,6 +5,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Random;
 
+import org.inodes.gus.demo.Drink.Ingredient;
+
 import android.app.ProgressDialog;
 import android.content.ComponentName;
 import android.content.Context;
@@ -42,13 +44,11 @@ public class Chooser extends ListFragment {
 	private String[] mSpeechDone;
 	
 	final private ServiceConnection mConnection = new ServiceConnection() {
-		@Override
 		public void onServiceConnected(ComponentName name, IBinder service) {
 			mDeviceService = new Messenger(service);
 			getListView().setEnabled(true);
 		}
 
-		@Override
 		public void onServiceDisconnected(ComponentName name) {
 			getListView().setEnabled(false);
 		}
@@ -103,7 +103,13 @@ public class Chooser extends ListFragment {
 			drink_name.setText(drink.getName());
 
 			TextView desc = (TextView)v.findViewById(R.id.drink_desc);
-			desc.setText(drink.getDescription());
+			StringBuilder ingredients = new StringBuilder();
+			for(Ingredient i : drink.getIngredients()) {
+				if(ingredients.length() > 0)
+					ingredients.append(", ");
+				ingredients.append(i.bottle.toString());
+			}
+			desc.setText(ingredients.toString());
 
 			return v;
 		}
@@ -207,7 +213,6 @@ public class Chooser extends ListFragment {
 		mSpeechDone = res.getStringArray(R.array.speech_done);
 		if (ENABLE_SPEECH) {
 			mTts = new TextToSpeech(getActivity(), new TextToSpeech.OnInitListener() {
-				@Override
 				public void onInit(int status) {
 					if (status == TextToSpeech.ERROR) {
 						Log.e(TAG, "Error initialising text-to-speech - disabling");

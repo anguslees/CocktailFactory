@@ -1,84 +1,93 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <drinks>
 <drink>
-<name>Boulevardier</name>
-<description></description>
-<image res="@drawable/drink_placeholder"/>
-<ingredients>
-<ingredient id="whiskey" weight="30"/>
-<ingredient id="sweet_vermouth" weight="30" />
-<ingredient id="campari" weight="30" />
-</ingredients>
+  <name>Strawberry Creme</name>
+  <description></description>
+  <image res="@drawable/soda_1"/>
+  <ingredients>
+    <ingredient id="vanilla" weight="20" />
+    <ingredient id="strawberry" weight="40" />
+  </ingredients>
 </drink>
 <drink>
-<name>Manhattan</name>
-<description>(ish)</description>
-<image res="@drawable/drink_placeholder"/>
-<ingredients>
-<ingredient id="whiskey" weight="60"/>
-<ingredient id="sweet_vermouth" weight="30"/>
-</ingredients>
+  <name>Orange Creme</name>
+  <description></description>
+  <image res="@drawable/soda_2"/>
+  <ingredients>
+    <ingredient id="vanilla" weight="20" />
+    <ingredient id="orange" weight="40" />
+  </ingredients>
 </drink>
 <drink>
-<name>Americano</name>
-<description></description>
-<image res="@drawable/drink_placeholder"/>
-<ingredients>
-<ingredient id="sweet_vermouth" weight="30"/>
-<ingredient id="campari" weight="30"/>
-</ingredients>
-</drink>
-<!-- 
-New drinks:
- <drink/>
- DrinkActivity
- Fluffy Cloud
- +1 for the road
- .. geo ..
- I'm Feeling Lucky
- beta?
- Street Brew
- Schnapps Engine
-
-<drink>
-<name>Martinez</name>
-<description></description>
-<image res="@drawable/drink_placeholder"/>
-<ingredients>
-<ingredient id="gin" weight="50"/>
-<ingredient id="sweet_vermouth" weight="40"/>
-<ingredient id="cointreau" weight="10"/>
-</ingredients>
+  <name>Orange Mango</name>
+  <description></description>
+  <image res="@drawable/soda_3"/>
+  <ingredients>
+    <ingredient id="orange" weight="30" />
+    <ingredient id="mango" weight="30" />
+  </ingredients>
 </drink>
 <drink>
-<name>Negroni</name>
-<description></description>
-<image res="@drawable/drink_placeholder"/>
-<ingredients>
-<ingredient id="gin" weight="30"/>
-<ingredient id="sweet_vermouth" weight="30"/>
-<ingredient id="campari" weight="30"/>
-</ingredients>
+  <name>Strawberry Mint</name>
+  <description></description>
+  <image res="@drawable/soda_4"/>
+  <ingredients>
+    <ingredient id="mint" weight="20" />
+    <ingredient id="strawberry" weight="40" />
+  </ingredients>
 </drink>
 <drink>
-<name>Whiskey Sour</name>
-<description></description>
-<image res="@drawable/drink_placeholder"/>
-<ingredients>
-<ingredient id="whiskey" weight="50"/>
-<ingredient id="cointreau" weight="20"/>
-<ingredient id="lemon" weight="20"/>
-</ingredients>
+  <name>All Fruits</name>
+  <description></description>
+  <image res="@drawable/soda_5"/>
+  <ingredients>
+    <ingredient id="mango" weight="20" />
+    <ingredient id="strawberry" weight="20" />
+    <ingredient id="orange" weight="20" />
+  </ingredients>
 </drink>
 <drink>
-<name>White Lady</name>
-<description></description>
-<image res="@drawable/drink_placeholder"/>
-<ingredients>
-<ingredient id="gin" weight="50"/>
-<ingredient id="cointreau" weight="20"/>
-<ingredient id="lemon" weight="20"/>
-</ingredients>
+  <name>Elder Orange</name>
+  <description></description>
+  <image res="@drawable/soda_1"/>
+  <ingredients>
+    <ingredient id="elderflower" weight="30" />
+    <ingredient id="orange" weight="30" />
+  </ingredients>
 </drink>
--->
+<drink>
+  <name>Elder Mango</name>
+  <description></description>
+  <image res="@drawable/soda_2"/>
+  <ingredients>
+    <ingredient id="elderflower" weight="30" />
+    <ingredient id="mango" weight="30" />
+  </ingredients>
+</drink>
+<drink>
+  <name>Pure Elderflower</name>
+  <description></description>
+  <image res="@drawable/soda_3"/>
+  <ingredients>
+    <ingredient id="elderflower" weight="60" />
+  </ingredients>
+</drink>
+<drink>
+  <name>Vanilla Mint</name>
+  <description></description>
+  <image res="@drawable/soda_4"/>
+  <ingredients>
+    <ingredient id="vanilla" weight="30" />
+    <ingredient id="mint" weight="30" />
+  </ingredients>
+</drink>
+<drink>
+  <name>Orange Mint</name>
+  <description></description>
+  <image res="@drawable/soda_5"/>
+  <ingredients>
+    <ingredient id="orange" weight="30" />
+    <ingredient id="mint" weight="30" />
+  </ingredients>
+</drink>
 </drinks>

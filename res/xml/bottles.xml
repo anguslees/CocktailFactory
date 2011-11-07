@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ingredients>
-<ingredient id="whiskey" bottle_num="0">Rye whiskey</ingredient>
-<ingredient id="sweet_vermouth" bottle_num="1">Sweet Vermouth</ingredient>
-<ingredient id="campari" bottle_num="2">Campari</ingredient>
-<ingredient id="gin" bottle_num="0">Gin</ingredient>
-<ingredient id="cointreau" bottle_num="1">Cointreau</ingredient>
-<ingredient id="lemon" bottle_num="2">Lemon Juice</ingredient>
+<ingredient id="vanilla" bottle_num="0">Vanilla</ingredient>
+<ingredient id="mint" bottle_num="1">Mint</ingredient>
+<ingredient id="strawberry" bottle_num="2">Strawberry</ingredient>
+<ingredient id="mango" bottle_num="3">Mango</ingredient>
+<ingredient id="orange" bottle_num="4">Orange</ingredient>
+<ingredient id="elderflower" bottle_num="5">Elderflower</ingredient>
 </ingredients>
