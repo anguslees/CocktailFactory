@@ -10,6 +10,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -33,9 +34,13 @@ public class Chooser extends ListFragment {
 	
 	private final static boolean ENABLE_SPEECH = true;
 
+	final private Random mRandom = new Random();
 	private ArrayAdapter<Drink> mAdapter;
 	private Messenger mDeviceService = null;
 	private TextToSpeech mTts = null;
+	private String[] mSpeechAccept;
+	private String[] mSpeechDone;
+	
 	final private ServiceConnection mConnection = new ServiceConnection() {
 		@Override
 		public void onServiceConnected(ComponentName name, IBinder service) {
@@ -107,7 +112,6 @@ public class Chooser extends ListFragment {
 	private class RandomDrink extends Drink {
 		final private static int NUM_INGREDIENTS = 3;
 		final private static int TOTAL_WEIGHT = 60;
-		final private Random mRandom = new Random();
 		final Bottle[] allBottles = (Bottle[])Bottle.getBottles().toArray();
 		public RandomDrink(String name, String desc, int imgResource) {
 			super(name, desc, null, imgResource);
@@ -132,7 +136,7 @@ public class Chooser extends ListFragment {
 		getListView().setEnabled(false);  // reenabled once finished
 		
 		if (mTts != null) {
-			mTts.speak("An excellent choice!", TextToSpeech.QUEUE_FLUSH, null);
+			speakRandomPhrase(mSpeechAccept, TextToSpeech.QUEUE_FLUSH);
 			mTts.speak("Just place your glass on the scales.", TextToSpeech.QUEUE_ADD, null);
 		}
 	}
@@ -163,9 +167,8 @@ public class Chooser extends ListFragment {
 		if (f != null)
 			f.dismiss();
 
-		if (mTts != null) {
-			mTts.speak("Enjoy!", TextToSpeech.QUEUE_ADD, null);
-		}
+		if (mTts != null)
+			speakRandomPhrase(mSpeechDone, TextToSpeech.QUEUE_ADD);
 	}
 
 	protected void onDrinkError(String err) {
@@ -175,16 +178,24 @@ public class Chooser extends ListFragment {
 		if (f != null)
 			f.dismiss();
 
-		if (mTts != null) {
+		if (mTts != null)
 			mTts.speak("Oops, sorry about that!", TextToSpeech.QUEUE_FLUSH, null);
-		}
 		
 		Toast.makeText(getActivity(), "Error: " + err, Toast.LENGTH_SHORT).show();
+	}
+
+	private void speakRandomPhrase(String[] phrases, int queueMode) {
+		if (mTts != null) {
+			final String phrase = phrases[mRandom.nextInt(phrases.length)];
+			mTts.speak(phrase, queueMode, null);
+		}
 	}
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
+		Resources res = getResources();
 
 		mAdapter = new DrinkAdapter(getActivity(), Drink.getDrinks(getActivity()));
 		mAdapter.add(new RandomDrink("I'm Feeling Lucky",
@@ -192,6 +203,8 @@ public class Chooser extends ListFragment {
 		setListAdapter(mAdapter);
 		Log.d(TAG, "xml files parsed");
 
+		mSpeechAccept = res.getStringArray(R.array.speech_accept);
+		mSpeechDone = res.getStringArray(R.array.speech_done);
 		if (ENABLE_SPEECH) {
 			mTts = new TextToSpeech(getActivity(), new TextToSpeech.OnInitListener() {
 				@Override

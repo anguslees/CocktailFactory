@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="speech_done">
+        <item>Hey, you gonna pay for those?</item>
+        <item>Enjoy!</item>
+        <item>Here you go!</item>
+        <item>Next!</item>
+    </string-array>
+</resources>

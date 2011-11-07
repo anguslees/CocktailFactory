@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="speech_accept">
+        <item>You got it!</item><item>An excellent choice!</item>
+        <item>Of course!</item>
+        <item>Executing repetitive task 37 alpha</item>
+    </string-array>
+</resources>
