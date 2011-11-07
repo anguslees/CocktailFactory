@@ -5,8 +5,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Random;
 
-import org.inodes.gus.demo.Drink.Ingredient;
-
 import android.app.ProgressDialog;
 import android.content.ComponentName;
 import android.content.Context;
@@ -103,13 +101,7 @@ public class Chooser extends ListFragment {
 			drink_name.setText(drink.getName());
 
 			TextView desc = (TextView)v.findViewById(R.id.drink_desc);
-			StringBuilder ingredients = new StringBuilder();
-			for(Ingredient i : drink.getIngredients()) {
-				if(ingredients.length() > 0)
-					ingredients.append(", ");
-				ingredients.append(i.bottle.toString());
-			}
-			desc.setText(ingredients.toString());
+			desc.setText(drink.getDescription());
 
 			return v;
 		}
@@ -150,12 +142,11 @@ public class Chooser extends ListFragment {
 	protected void onDrinkProgress(int progress, int max) {
 		Log.d(TAG, "onDrinkProgress(" + progress + "/" + max + ")");
 		ProgressDialogFragment f = (ProgressDialogFragment)getFragmentManager().findFragmentByTag("dialog");
-		Log.d(TAG, "Found dialog fragment: " + f);
 		if (f != null) {
 			ProgressDialog d = (ProgressDialog)f.getDialog();
 			if (d.isIndeterminate()) {
-				Log.d(TAG, "dialog is indeterminate - switching to horizontal");
 				// currently showing spinner - time to switch to horizontal
+				Log.d(TAG, "dialog is indeterminate - switching to horizontal");
 				FragmentTransaction ft = getFragmentManager().beginTransaction();
 				f.dismiss();
 				f = ProgressDialogFragment.newHorizInstance();

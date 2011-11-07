@@ -42,7 +42,16 @@ public class Drink {
 	}
 	
 	public String getDescription() {
-		return mDescription;
+		if (!mDescription.equals(""))
+			return mDescription;
+
+		StringBuilder buf = new StringBuilder();
+		for(Ingredient i : getIngredients()) {
+			if(buf.length() > 0)
+				buf.append(", ");
+			buf.append(i.bottle.toString());
+		}
+		return buf.toString();
 	}
 
 	public int getImageResource() {
