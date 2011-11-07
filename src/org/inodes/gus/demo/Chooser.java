@@ -24,6 +24,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -44,13 +45,10 @@ public class Chooser extends ListFragment {
 	final private ServiceConnection mConnection = new ServiceConnection() {
 		public void onServiceConnected(ComponentName name, IBinder service) {
 			mDeviceService = new Messenger(service);
-			getListView().setEnabled(true);
 		}
 
 		public void onServiceDisconnected(ComponentName name) {
-			getListView().setEnabled(false);
 		}
-		
 	};
 
 	final private Messenger mMessenger = new Messenger(new MessageHandler());
@@ -78,6 +76,17 @@ public class Chooser extends ListFragment {
 		}
 	}
 
+	private class GoButtonClickListener implements View.OnClickListener {
+		private final Drink mDrink;
+		public GoButtonClickListener(Drink drink) {
+			mDrink = drink;
+		}
+		@Override
+		public void onClick(View v) {
+			makeDrink(mDrink);
+		}
+	}
+
 	private class DrinkAdapter extends ArrayAdapter<Drink> {
 		public DrinkAdapter(Context context, Collection<Drink> collection) {
 			super(context, R.layout.drink_view, 0);
@@ -102,6 +111,9 @@ public class Chooser extends ListFragment {
 
 			TextView desc = (TextView)v.findViewById(R.id.drink_desc);
 			desc.setText(drink.getDescription());
+
+			Button go = (Button)v.findViewById(R.id.go_button);
+			go.setOnClickListener(new GoButtonClickListener(drink));
 
 			return v;
 		}
@@ -131,8 +143,7 @@ public class Chooser extends ListFragment {
 				"Place your glass on the scales");
 		f.show(getFragmentManager(), "dialog");
 
-		getListView().setEnabled(false);  // reenabled once finished
-		
+
 		if (mTts != null) {
 			speakRandomPhrase(mSpeechAccept, TextToSpeech.QUEUE_FLUSH);
 			mTts.speak("Just place your glass on the scales.", TextToSpeech.QUEUE_ADD, null);
@@ -158,8 +169,6 @@ public class Chooser extends ListFragment {
 	}
 
 	protected void onDrinkCompleted() {
-		getListView().setEnabled(true);
-
 		ProgressDialogFragment f = (ProgressDialogFragment)getFragmentManager().findFragmentByTag("dialog");
 		if (f != null)
 			f.dismiss();
@@ -169,8 +178,6 @@ public class Chooser extends ListFragment {
 	}
 
 	protected void onDrinkError(String err) {
-		getListView().setEnabled(true);
-
 		ProgressDialogFragment f = (ProgressDialogFragment)getFragmentManager().findFragmentByTag("dialog");
 		if (f != null)
 			f.dismiss();
@@ -225,7 +232,7 @@ public class Chooser extends ListFragment {
 
 		ListView lv = getListView();
 		lv.setTextFilterEnabled(true);
-		lv.setEnabled(false);  // enabled once we connect to DeviceInterface service
+		lv.setEnabled(false);  // "selection" is done via an explicit button in each listitem
 	}
 
 	@Override
@@ -245,8 +252,12 @@ public class Chooser extends ListFragment {
 
 	@Override
 	public void onListItemClick(ListView l, View v, int position, long id) {
-		CocktailFactoryActivity activity = (CocktailFactoryActivity)getActivity();
 		Drink drink = (Drink)mAdapter.getItem(position);
+		makeDrink(drink);
+	}
+
+	private void makeDrink(Drink drink) {
+		CocktailFactoryActivity activity = (CocktailFactoryActivity)getActivity();
 		try {
 			Message msg = Message.obtain(null, DeviceInterface.MSG_MAKE_DRINK,
 					drink.getName());
@@ -258,7 +269,7 @@ public class Chooser extends ListFragment {
 
 			onDrinkChosen(drink);
 		} catch (RemoteException e) {
-			Toast.makeText(getActivity(), R.string.deviceservice_disconnected,
+			Toast.makeText(activity, R.string.deviceservice_disconnected,
 					Toast.LENGTH_SHORT).show();
 		}
 	}

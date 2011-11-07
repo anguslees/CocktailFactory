@@ -2,4 +2,5 @@
 <resources>
     <string name="app_name">Cocktail Factory</string>
     <string name="deviceservice_disconnected">Error: Device Service has disconnected</string>
+    <string name="go">Go</string>
 </resources>

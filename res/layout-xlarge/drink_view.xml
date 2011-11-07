@@ -12,10 +12,19 @@
     <LinearLayout android:orientation="vertical"
 	android:layout_width="fill_parent" android:layout_height="200dip"
 	android:layout_weight="2" android:gravity="center_vertical">
+
     <TextView android:id="@+id/drink_name" android:textSize="48sp"
 	android:layout_width="fill_parent" android:layout_height="wrap_content" />
+
+	<LinearLayout android:orientation="horizontal"
+	android:layout_width="fill_parent" android:layout_height="wrap_content">
     <TextView android:id="@+id/drink_desc" android:textSize="20sp"
 	android:layout_width="fill_parent" android:layout_height="wrap_content" />
+	<Button android:id="@+id/go_button" android:text="@string/go"
+	android:layout_width="wrap_content" android:layout_height="wrap_content"
+	android:padding="3sp" />
+	</LinearLayout>
+
 	</LinearLayout>
 
 </LinearLayout>
