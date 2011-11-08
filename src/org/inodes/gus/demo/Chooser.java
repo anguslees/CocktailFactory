@@ -1,8 +1,6 @@
 package org.inodes.gus.demo;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.Random;
 
 import android.app.ProgressDialog;
@@ -112,12 +110,15 @@ public class Chooser extends ListFragment {
 			TextView desc = (TextView)v.findViewById(R.id.drink_desc);
 			desc.setText(drink.getDescription());
 
+			/*
 			Button go = (Button)v.findViewById(R.id.go_button);
 			go.setOnClickListener(new GoButtonClickListener(drink));
-
+			 */
+		
 			return v;
 		}
 
+		/*
 		@Override
 		public boolean areAllItemsEnabled() {
 			return false;
@@ -128,25 +129,7 @@ public class Chooser extends ListFragment {
 			// "selection" is handled via an explicit "go" button in the item view
 			return false;
         }
-	}
-
-	private class RandomDrink extends Drink {
-		final private static int NUM_INGREDIENTS = 3;
-		final private static int TOTAL_WEIGHT = 60;
-		final Bottle[] allBottles = Bottle.getBottles().toArray(new Bottle[0]);
-		public RandomDrink(String name, String desc, int imgResource) {
-			super(name, desc, null, imgResource);
-		}
-		@Override
-		public Collection<Ingredient> getIngredients() {
-			List<Ingredient> ingredients = new ArrayList<Ingredient>();
-			for (int i = 0; i < NUM_INGREDIENTS; i++) {
-				int bottle_num = mRandom.nextInt(allBottles.length);
-				ingredients.add(new Drink.Ingredient(allBottles[bottle_num],
-						TOTAL_WEIGHT / NUM_INGREDIENTS));
-			}
-			return ingredients;
-		}
+        */
 	}
 
 	protected void onDrinkChosen(Drink drink) {
@@ -213,8 +196,6 @@ public class Chooser extends ListFragment {
 		Resources res = getResources();
 
 		mAdapter = new DrinkAdapter(getActivity(), Drink.getDrinks(getActivity()));
-		mAdapter.add(new RandomDrink("I'm Feeling Lucky",
-				"Let the bartender mix a drink just for you", R.drawable.drink_placeholder));
 		setListAdapter(mAdapter);
 		Log.d(TAG, "xml files parsed");
 

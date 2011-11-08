@@ -3,9 +3,10 @@ package org.inodes.gus.demo;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -30,6 +31,27 @@ public class Drink {
 		}
 	}
 
+	private static class RandomDrink extends Drink {
+		final private static int NUM_INGREDIENTS = 3;
+		final private static int TOTAL_WEIGHT = 60;
+		final Bottle[] allBottles;
+		final Random mRandom = new Random();
+		public RandomDrink(Context context, String name, String desc, int imgResource) {
+			super(name, desc, null, imgResource);
+			allBottles = Bottle.getBottles(context).toArray(new Bottle[0]);
+		}
+		@Override
+		public Collection<Ingredient> getIngredients() {
+			List<Ingredient> ingredients = new ArrayList<Ingredient>();
+			for (int i = 0; i < NUM_INGREDIENTS; i++) {
+				int bottle_num = mRandom.nextInt(allBottles.length);
+				ingredients.add(new Drink.Ingredient(allBottles[bottle_num],
+						TOTAL_WEIGHT / NUM_INGREDIENTS));
+			}
+			return ingredients;
+		}
+	}
+
 	public Drink(String name, String description, List<Ingredient> ingredients, int imageResource) {
 		mName = name;
 		mDescription = description;
@@ -44,7 +66,7 @@ public class Drink {
 	public String getDescription() {
 		if (!mDescription.equals(""))
 			return mDescription;
-
+		
 		StringBuilder buf = new StringBuilder();
 		for(Ingredient i : getIngredients()) {
 			if(buf.length() > 0)
@@ -83,9 +105,15 @@ public class Drink {
 
 	private static void readDrinks(Context context) {
 		Log.d(TAG, "reading drinks.xml");
+
+		Map<String, Drink> drinks = new LinkedHashMap<String, Drink>();
+
+		Drink randomDrink = new RandomDrink(context, "I'm Feeling Lucky",
+				"Let the bartender mix a drink just for you", R.drawable.drink_placeholder);
+		drinks.put(randomDrink.getName(), randomDrink);
+
 		try {
 			XmlPullParser parser = context.getResources().getXml(R.xml.drinks);
-			Map<String, Drink> drinks = new HashMap<String, Drink>();
 			String name = null;
 			String description = null;
 			List<Ingredient> ingredients = new ArrayList<Ingredient>();
@@ -126,11 +154,12 @@ public class Drink {
 					break;
 				}
 			}
-			mDrinks = drinks;
 		} catch (XmlPullParserException e) {
 			Log.e(TAG, "Error parsing drinks list", e);
 		} catch (IOException e) {
 			Log.e(TAG, "Error reading drinks list", e);
 		}
+
+		mDrinks = drinks;
 	}
 }

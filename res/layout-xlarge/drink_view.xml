@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent">
+    android:layout_height="fill_parent" android:padding="8sp">
 
     <ImageView android:id="@+id/drink_image"
 	android:scaleType="fitCenter" android:layout_height="fill_parent"
@@ -19,10 +19,13 @@
 	<LinearLayout android:orientation="horizontal"
 	android:layout_width="fill_parent" android:layout_height="wrap_content">
     <TextView android:id="@+id/drink_desc" android:textSize="20sp"
-	android:layout_width="fill_parent" android:layout_height="wrap_content" />
+	android:layout_width="fill_parent" android:layout_height="wrap_content"
+	android:layout_weight="1" />
+	<!--
 	<Button android:id="@+id/go_button" android:text="@string/go"
 	android:layout_width="wrap_content" android:layout_height="wrap_content"
-	android:padding="3sp" />
+	android:padding="3sp" android:layout_weight="1"/>
+	  -->
 	</LinearLayout>
 
 	</LinearLayout>

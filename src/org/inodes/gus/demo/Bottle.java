@@ -29,7 +29,9 @@ public class Bottle {
 		return ret;
 	}
 	
-	public static Collection<Bottle> getBottles() {
+	public static Collection<Bottle> getBottles(Context context) {
+		if (singletonMap == null)
+			readBottles(context);
 		return singletonMap.values();
 	}
 
